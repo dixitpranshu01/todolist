@@ -1,0 +1,113 @@
+<head>
+    <title>To-Do List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-add {
+            background-color: #4caf50;
+            color: #fff;
+        }
+
+        .btn-delete {
+            background-color: #f44336;
+            color: #fff;
+        }
+
+        .btn-check {
+            background-color: #2196f3;
+            color: #fff;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>To-Do List</h1>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="task_text" placeholder="Add new task...">
+            <button type="submit" class="btn btn-add">Add Task</button>
+        </form>
+        <ul>
+            {% for task in tasks %}
+            <li>
+                <span>{{ task.title }}</span>
+                <div class="task-actions">
+                    <form method="POST" action="{% url 'delete_task' task.id %}">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-delete">Delete</button>
+                    </form>
+                
+                    {% if task.completed %}
+                        <span class="btn btn-check checked" style="background-color: #4caf50;">Completed &#x2714</span>
+                    {% else %}
+                        <form method="POST" action="{% url 'check_task' task.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-check">Check</button>
+                        </form>
+                    {% endif %}
+
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
